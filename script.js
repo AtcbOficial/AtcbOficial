@@ -1,6 +1,6 @@
 // Estado global
 let data = JSON.parse(localStorage.getItem('atcb_data')) || structuredClone(INITIAL_DATA);
-let cart = []; // siempre inicia vacío (no se guarda entre visitas)
+let cart = JSON.parse(localStorage.getItem('atcb_cart')) || [];
 let currentCat = 'all';
 let editingProdId = null;
 
@@ -21,7 +21,7 @@ function saveData() {
   localStorage.setItem('atcb_data', JSON.stringify(data));
 }
 function saveCart() {
-  // no se guarda en localStorage → siempre limpio al entrar o refrescar
+  localStorage.setItem('atcb_cart', JSON.stringify(cart));
   updateCartCount();
 }
 
@@ -108,7 +108,8 @@ function renderProducts() {
         <h3>${p.name}</h3>
         ${!p.available ? '<span class="agotado">AGOTADO</span>' : ''}
         <p class="desc">${p.desc}</p>
-        <button class="btn primary add-btn pulse-add" ${!p.available ? 'disabled style="opacity:0.5"' : ''} 
+        <p class="price">$${p.price.toLocaleString()}</p>
+        <button class="btn primary add-btn" ${!p.available ? 'disabled style="opacity:0.5"' : ''} 
           onclick="addToCart(${p.id})">${p.available ? 'Agregar al Carrito' : 'No disponible'}</button>
       </div>
     </div>
@@ -225,10 +226,6 @@ function sendWhatsApp() {
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
   msg += `%0A*Total: $${total.toLocaleString()}*%0A%0AGracias!`;
   window.open(`https://wa.me/${data.whatsapp}?text=${msg}`, '_blank');
-  // Limpiar carrito después de enviar
-  cart = [];
-  saveCart();
-  renderCart();
 }
 
 function updateCartCount() {
