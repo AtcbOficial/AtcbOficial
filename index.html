@@ -29,7 +29,7 @@
           <h2>Técnico en Refrigeración Comercial e Industrial</h2>
           <p id="heroDesc">Venta de implementos, fabricación y servicio técnico de neveras exhibidoras, cuartos fríos y más.</p>
           <div class="hero-btns">
-            <button class="btn primary" onclick="showSection('catalogo')">Ver Catálogo</button>
+            <button class="btn primary pulse-order" onclick="showSection('catalogo')">Ver Catálogo</button>
             <button class="btn secondary" onclick="openContact()">Solicitar Cotización</button>
           </div>
         </div>
@@ -81,7 +81,6 @@
       <h1 class="section-title">Tu Carrito</h1>
       <div id="cartItems" class="cart-list"></div>
       <div class="cart-total">
-        <p>Total: <strong id="cartTotal">$0</strong></p>
         <button class="btn primary pulse-order" id="orderBtn" onclick="sendWhatsApp()">Enviar Pedido por WhatsApp</button>
         <button class="btn secondary" onclick="clearCart()">Vaciar Carrito</button>
       </div>
@@ -159,6 +158,15 @@
     <p>© 2024 @AtcbOficial - Luis Bonilla | Refrigeración Comercial e Industrial</p>
     <p class="secret" onclick="showSection('admin')">·</p>
   </footer>
+
+  <!-- Lightbox proyectos -->
+  <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+    <button class="lb-close" onclick="closeLightbox(event)">✕</button>
+    <button class="lb-prev" onclick="lbNav(-1); event.stopPropagation()">‹</button>
+    <img id="lbImg" src="" alt="">
+    <button class="lb-next" onclick="lbNav(1); event.stopPropagation()">›</button>
+    <p id="lbDesc"></p>
+  </div>
 
   <script src="data.js"></script>
   <script src="script.js"></script>

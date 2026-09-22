@@ -46,12 +46,11 @@ function renderGallery() {
   const allImgs = data.gallery.map(g => g.img);
   const grid = document.getElementById('galleryGrid');
   grid.innerHTML = data.gallery.map((g, idx) => {
-    // cada tarjeta cicla las imágenes disponibles
     const slides = allImgs.map((src, i) => 
       `<img src="${src}" class="${i === 0 ? 'active' : ''}" onerror="this.src='images/logo.png'">`
     ).join('');
     return `
-    <div class="gallery-item" data-slide-idx="${idx}">
+    <div class="gallery-item" data-slide-idx="${idx}" onclick="openLightbox(${idx})">
       <div class="slides">${slides}</div>
       <p>${g.desc}</p>
     </div>`;
@@ -61,6 +60,27 @@ function renderGallery() {
   document.getElementById('phoneDisplay').textContent = data.phone;
   document.querySelector('.btn.whatsapp').href = `https://wa.me/${data.whatsapp}`;
   document.querySelector('.btn.instagram').href = `https://instagram.com/${data.instagram}`;
+}
+
+let lbIndex = 0;
+function openLightbox(idx) {
+  lbIndex = idx;
+  const g = data.gallery[lbIndex];
+  if (!g) return;
+  document.getElementById('lbImg').src = g.img;
+  document.getElementById('lbDesc').textContent = g.desc;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(e) {
+  if (e.target.id === 'lightbox' || e.target.classList.contains('lb-close')) {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+}
+function lbNav(dir) {
+  lbIndex = (lbIndex + dir + data.gallery.length) % data.gallery.length;
+  const g = data.gallery[lbIndex];
+  document.getElementById('lbImg').src = g.img;
+  document.getElementById('lbDesc').textContent = g.desc;
 }
 
 let slideTimers = [];
@@ -108,8 +128,7 @@ function renderProducts() {
         <h3>${p.name}</h3>
         ${!p.available ? '<span class="agotado">AGOTADO</span>' : ''}
         <p class="desc">${p.desc}</p>
-        <p class="price">$${p.price.toLocaleString()}</p>
-        <button class="btn primary add-btn" ${!p.available ? 'disabled style="opacity:0.5"' : ''} 
+        <button class="btn primary add-btn pulse-add" ${!p.available ? 'disabled style="opacity:0.5"' : ''} 
           onclick="addToCart(${p.id})">${p.available ? 'Agregar al Carrito' : 'No disponible'}</button>
       </div>
     </div>
@@ -169,7 +188,6 @@ function renderCart() {
   const orderBtn = document.getElementById('orderBtn');
   if (cart.length === 0) {
     list.innerHTML = '<p style="text-align:center;color:var(--muted);padding:2rem;">Tu carrito está vacío. ¡Ve al catálogo!</p>';
-    document.getElementById('cartTotal').textContent = '$0';
     if (orderBtn) orderBtn.classList.remove('pulse-order');
     return;
   }
@@ -178,19 +196,15 @@ function renderCart() {
       <img src="${item.img}" alt="${item.name}" onerror="this.src='images/logo.png'">
       <div class="details">
         <h4>${item.name}</h4>
-        <p>$${item.price.toLocaleString()} c/u</p>
       </div>
       <div class="qty">
         <button onclick="changeQty(${item.id}, -1)">−</button>
         <span>${item.qty}</span>
         <button onclick="changeQty(${item.id}, 1)">+</button>
       </div>
-      <strong>$${(item.price * item.qty).toLocaleString()}</strong>
       <button class="btn secondary" style="padding:0.4rem 0.8rem;" onclick="removeFromCart(${item.id})">Eliminar</button>
     </div>
   `).join('');
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  document.getElementById('cartTotal').textContent = '$' + total.toLocaleString();
   if (orderBtn) orderBtn.classList.add('pulse-order');
 }
 
@@ -221,11 +235,13 @@ function sendWhatsApp() {
   if (cart.length === 0) { alert('El carrito está vacío'); return; }
   let msg = 'Hola! Quiero hacer el siguiente pedido:%0A%0A';
   cart.forEach(i => {
-    msg += `• ${i.name} x${i.qty} = $${(i.price * i.qty).toLocaleString()}%0A`;
+    msg += `• ${i.name} x${i.qty}%0A`;
   });
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  msg += `%0A*Total: $${total.toLocaleString()}*%0A%0AGracias!`;
+  msg += `%0AGracias!`;
   window.open(`https://wa.me/${data.whatsapp}?text=${msg}`, '_blank');
+  cart = [];
+  saveCart();
+  renderCart();
 }
 
 function updateCartCount() {
