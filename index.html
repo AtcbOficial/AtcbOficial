@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATCB Oficial | Refrigeración Comercial e Industrial</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="images/logo.png">
+</head>
+<body>
+  <header>
+    <div class="logo-area" onclick="showSection('inicio')">
+      <img src="images/logo.png" alt="Logo ATCB" class="logo">
+      <span class="brand">@AtcbOficial</span>
+    </div>
+    <nav id="mainNav">
+      <button onclick="showSection('inicio')" class="nav-btn active" data-sec="inicio">Inicio</button>
+      <button onclick="showSection('catalogo')" class="nav-btn" data-sec="catalogo">Catálogo</button>
+      <button onclick="showSection('carrito')" class="nav-btn" data-sec="carrito" id="cartNavBtn">Carrito <span id="cartCount">0</span></button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- INICIO -->
+    <section id="inicio" class="section active">
+      <div class="hero">
+        <div class="hero-text animate-fade">
+          <h1>Luis Bonilla</h1>
+          <h2>Técnico en Refrigeración Comercial e Industrial</h2>
+          <p id="heroDesc">Venta de implementos, fabricación y servicio técnico de neveras exhibidoras, cuartos fríos y más.</p>
+          <div class="hero-btns">
+            <button class="btn primary pulse-order" onclick="showSection('catalogo')">Ver Catálogo</button>
+            <button class="btn secondary" onclick="openContact()">Solicitar Cotización</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="about animate-fade">
+        <h2>¿Quién Soy?</h2>
+        <div class="about-content">
+          <img src="images/foto.png" alt="Luis" class="about-photo">
+          <div id="historiaText">
+            <p>Soy Luis Bonilla, técnico especializado en refrigeración comercial e industrial con años de experiencia. Fundé ATCB Oficial para ofrecer soluciones integrales: fabricación de cuartos fríos, neveras exhibidoras, mantenimiento y reparación de equipos de frío.</p>
+            <p>Mi compromiso es la calidad, la puntualidad y el servicio al cliente. Trabajamos con empresas y particulares en todo el territorio.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-section">
+        <h2>Proyectos Realizados</h2>
+        <div class="gallery" id="galleryGrid"></div>
+      </div>
+
+      <div class="contact-bar animate-fade">
+        <h3>¿Necesitas asistencia o cotización?</h3>
+        <div class="contact-info" id="contactInfo">
+          <a href="https://wa.me/580000000000" class="btn whatsapp" target="_blank">WhatsApp</a>
+          <a href="https://instagram.com/AtcbOficial" class="btn instagram" target="_blank">Instagram @AtcbOficial</a>
+          <p>Tel: <span id="phoneDisplay">+58 000-0000000</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATALOGO -->
+    <section id="catalogo" class="section">
+      <h1 class="section-title">Catálogo de Productos</h1>
+      <div class="cats" id="catFilters">
+        <button class="cat-btn active" data-cat="all">Todos</button>
+        <button class="cat-btn" data-cat="cuartos">Cuartos Fríos</button>
+        <button class="cat-btn" data-cat="exhibidoras">Neveras Exhibidoras</button>
+        <button class="cat-btn" data-cat="domestica">Nevera Doméstica</button>
+        <button class="cat-btn" data-cat="lavadoras">Lavadoras</button>
+        <button class="cat-btn" data-cat="herramientas">Herramientas</button>
+        <button class="cat-btn" data-cat="otros">Otros</button>
+      </div>
+      <div class="products" id="productsGrid"></div>
+    </section>
+
+    <!-- CARRITO -->
+    <section id="carrito" class="section">
+      <h1 class="section-title">Tu Carrito</h1>
+      <div id="cartItems" class="cart-list"></div>
+      <div class="cart-total">
+        <p>Total: <strong id="cartTotal">$0</strong></p>
+        <button class="btn primary pulse-order" id="orderBtn" onclick="sendWhatsApp()">Enviar Pedido por WhatsApp</button>
+        <button class="btn secondary" onclick="clearCart()">Vaciar Carrito</button>
+      </div>
+    </section>
+
+    <!-- ADMIN (hidden) -->
+    <section id="admin" class="section">
+      <div id="adminLogin">
+        <h2>Acceso Admin</h2>
+        <input type="password" id="adminPass" placeholder="Clave">
+        <button class="btn primary" onclick="loginAdmin()">Entrar</button>
+        <p class="hint">Clave por defecto: atcb2024</p>
+      </div>
+      <div id="adminPanel" style="display:none;">
+        <h1>Panel de Administración</h1>
+        <button class="btn secondary" onclick="logoutAdmin()">Cerrar Sesión</button>
+        
+        <div class="admin-tabs">
+          <button class="admin-tab active" onclick="showAdminTab('inicioAdmin')">Inicio / Historia / Galería</button>
+          <button class="admin-tab" onclick="showAdminTab('productosAdmin')">Productos</button>
+          <button class="admin-tab" onclick="showAdminTab('configAdmin')">Configuración</button>
+        </div>
+
+        <div id="inicioAdmin" class="admin-content active">
+          <h3>Historia / Quién Soy</h3>
+          <textarea id="editHistoria" rows="6"></textarea>
+          <button class="btn primary" onclick="saveHistoria()">Guardar Historia</button>
+          <div class="preview" id="previewHistoria"></div>
+
+          <h3>Galería de Proyectos</h3>
+          <div id="galleryAdminList"></div>
+          <h4>Agregar Proyecto</h4>
+          <input type="text" id="newGalDesc" placeholder="Descripción">
+          <input type="file" id="newGalImg" accept="image/*">
+          <button class="btn primary" onclick="addGalleryItem()">Agregar a Galería</button>
+          <div class="preview" id="previewGal"></div>
+        </div>
+
+        <div id="productosAdmin" class="admin-content">
+          <h3>Productos</h3>
+          <div id="productsAdminList"></div>
+          <h4>Agregar / Editar Producto</h4>
+          <input type="hidden" id="editProdId">
+          <input type="text" id="prodName" placeholder="Nombre">
+          <select id="prodCat">
+            <option value="cuartos">Cuartos Fríos</option>
+            <option value="exhibidoras">Neveras Exhibidoras</option>
+            <option value="domestica">Nevera Doméstica</option>
+            <option value="lavadoras">Lavadoras</option>
+            <option value="herramientas">Herramientas</option>
+            <option value="otros">Otros</option>
+          </select>
+          <input type="number" id="prodPrice" placeholder="Precio">
+          <textarea id="prodDesc" placeholder="Detalles"></textarea>
+          <input type="file" id="prodImg" accept="image/*">
+          <label><input type="checkbox" id="prodStock"> Disponible</label>
+          <button class="btn primary" onclick="saveProduct()">Guardar Producto</button>
+          <div class="preview" id="previewProd"></div>
+        </div>
+
+        <div id="configAdmin" class="admin-content">
+          <h3>Contacto / WhatsApp</h3>
+          <input type="text" id="editPhone" placeholder="Teléfono (ej: 580000000000)">
+          <input type="text" id="editWhatsapp" placeholder="Número WhatsApp (sin +)">
+          <input type="text" id="editInstagram" placeholder="Instagram (sin @)">
+          <button class="btn primary" onclick="saveConfig()">Guardar Config</button>
+          <p>Clave Admin (cambiar): <input type="text" id="editPass" placeholder="Nueva clave"></p>
+          <button class="btn secondary" onclick="savePass()">Cambiar Clave</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2024 @AtcbOficial - Luis Bonilla | Refrigeración Comercial e Industrial</p>
+    <p class="secret" onclick="showSection('admin')">·</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
